@@ -1,0 +1,10 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+QworldServer-stresstest,org.QTS.stresstest.handler,AccessAppHandler,168,0,2,0,50,0,9,0,8,0
+QworldServer-stresstest,org.QTS.stresstest.handler,UdpHandshakeHandler,11,0,0,0,3,0,2,0,2,0
+QworldServer-stresstest,org.QTS.stresstest.handler,HandshakeHandler,21,0,0,0,2,0,2,0,2,0
+QworldServer-stresstest,org.QTS.stresstest.handler,LoginSuccessHandler,22,0,2,0,5,0,3,0,2,0
+QworldServer-stresstest,org.QTS.stresstest,SocketClientSetup,111,0,0,0,21,0,4,0,4,0
+QworldServer-stresstest,org.QTS.stresstest,UdpSocketStressTest,78,0,2,0,23,0,4,0,3,0
+QworldServer-stresstest,org.QTS.stresstest,WebSocketStressTest,77,0,2,0,23,0,4,0,3,0
+QworldServer-stresstest,org.QTS.stresstest,DefaultClientConfig,17,0,0,0,5,0,2,0,2,0
+QworldServer-stresstest,org.QTS.stresstest,TcpSocketStressTest,78,0,2,0,23,0,4,0,3,0

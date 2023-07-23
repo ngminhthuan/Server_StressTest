@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccessAppHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">QworldServer-stresstest</a> &gt; <a href="index.source.html" class="el_package">org.QTS.stresstest.handler</a> &gt; <span class="el_source">AccessAppHandler.java</span></div><h1>AccessAppHandler.java</h1><pre class="source lang-java linenums">package org.QTS.stresstest.handler;
+
+import com.tvd12.ezyfox.entity.EzyArray;
+import com.tvd12.ezyfox.entity.EzyObject;
+import com.tvd12.ezyfox.factory.EzyEntityFactory;
+import com.tvd12.ezyfoxserver.client.entity.EzyApp;
+import com.tvd12.ezyfoxserver.client.handler.EzyAppAccessHandler;
+import org.QTS.app.converter.EzyConverter;
+import lombok.AllArgsConstructor;
+import org.QTS.common.models.CharacterAppearanceModel;
+import org.QTS.common.models.NetworkCharacterModel;
+import org.QTS.common.models.TransformModel;
+
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+<span class="nc" id="L17">@AllArgsConstructor</span>
+public class AccessAppHandler extends EzyAppAccessHandler {
+
+    private final boolean useUdp;
+    private final ScheduledExecutorService executorService;
+
+    @Override
+    protected void postHandle(EzyApp app, EzyArray data) {
+<span class="nc" id="L25">        executorService.scheduleAtFixedRate(() -&gt; SpawnPlayer(app), 10, 5, TimeUnit.SECONDS);</span>
+<span class="nc" id="L26">    }</span>
+
+    private void SpawnPlayer(EzyApp app) {
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        if (useUdp) {</span>
+<span class="nc" id="L30">            app.send(&quot;udpPlayerSpawn&quot;, newPlayerSpawn());</span>
+        } else {
+<span class="nc" id="L32">            app.send(&quot;tcpPlayerSpawn&quot;, newPlayerSpawn());</span>
+        }
+<span class="nc" id="L34">    }</span>
+
+    private EzyObject newPlayerSpawn() {
+
+<span class="nc" id="L38">        EzyObject ModelObject = EzyConverter.marshaller.marshal(newPlayerData());</span>
+
+<span class="nc" id="L40">        EzyObject playerobject = EzyEntityFactory.newObjectBuilder()</span>
+<span class="nc" id="L41">                .append(&quot;Data&quot;, ModelObject)</span>
+<span class="nc" id="L42">                .append(&quot;Command&quot;, &quot;SpawnInChanel&quot;)</span>
+<span class="nc" id="L43">                .build();</span>
+
+<span class="nc" id="L45">        return playerobject;</span>
+    }
+
+    private NetworkCharacterModel newPlayerData() {
+<span class="nc" id="L49">        NetworkCharacterModel playerData = new NetworkCharacterModel();</span>
+
+<span class="nc" id="L51">        TransformModel newTransform = newPlayerTransform();</span>
+<span class="nc" id="L52">        CharacterAppearanceModel newAppear = newAppearanceData();</span>
+
+<span class="nc" id="L54">        playerData.setPlayfabId(&quot;a25121999&quot;);</span>
+<span class="nc" id="L55">        playerData.setName(&quot;NoName&quot;);</span>
+<span class="nc" id="L56">        playerData.setLevel(1);</span>
+<span class="nc" id="L57">        playerData.setCharacterId(1);</span>
+<span class="nc" id="L58">        playerData.setAvtId(&quot;100011&quot;);</span>
+<span class="nc" id="L59">        playerData.setFrameId(&quot;100011&quot;);</span>
+<span class="nc" id="L60">        playerData.setCurrentRoomId(012123213312);</span>
+<span class="nc" id="L61">        playerData.setTransform(newTransform);</span>
+<span class="nc" id="L62">        playerData.setCharacterAppearance(newAppear);</span>
+<span class="nc" id="L63">        playerData.setGender(&quot;Female&quot;);</span>
+<span class="nc" id="L64">        playerData.setSkinColorId(0);</span>
+
+<span class="nc" id="L66">        return playerData;</span>
+    }
+    private TransformModel newPlayerTransform() {
+<span class="nc" id="L69">        TransformModel newTransform = new TransformModel();</span>
+<span class="nc" id="L70">        newTransform.setAngle(0);</span>
+<span class="nc" id="L71">        newTransform.setPosX(0);</span>
+<span class="nc" id="L72">        newTransform.setPosY(0);</span>
+<span class="nc" id="L73">        newTransform.setPosZ(0);</span>
+<span class="nc" id="L74">        newTransform.setRotX(0);</span>
+<span class="nc" id="L75">        newTransform.setRotY(0);</span>
+<span class="nc" id="L76">        newTransform.setRotZ(0);</span>
+
+<span class="nc" id="L78">        return newTransform;</span>
+    }
+    private CharacterAppearanceModel newAppearanceData() {
+
+<span class="nc" id="L82">        CharacterAppearanceModel newAppearance = new CharacterAppearanceModel();</span>
+<span class="nc" id="L83">        newAppearance.setFace(0);</span>
+<span class="nc" id="L84">        newAppearance.setHair(0);</span>
+<span class="nc" id="L85">        newAppearance.setShirt(0);</span>
+<span class="nc" id="L86">        newAppearance.setCoat(0);</span>
+<span class="nc" id="L87">        newAppearance.setPants(0);</span>
+<span class="nc" id="L88">        newAppearance.setShoes(0);</span>
+<span class="nc" id="L89">        newAppearance.setGloves(0);</span>
+<span class="nc" id="L90">        newAppearance.setGlass(0);</span>
+<span class="nc" id="L91">        newAppearance.setHat(0);</span>
+<span class="nc" id="L92">        newAppearance.setBag(0);</span>
+<span class="nc" id="L93">        newAppearance.setSuit(0);</span>
+
+<span class="nc" id="L95">        return newAppearance;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

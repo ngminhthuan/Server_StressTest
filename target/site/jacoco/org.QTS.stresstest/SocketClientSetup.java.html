@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SocketClientSetup.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">QworldServer-stresstest</a> &gt; <a href="index.source.html" class="el_package">org.QTS.stresstest</a> &gt; <span class="el_source">SocketClientSetup.java</span></div><h1>SocketClientSetup.java</h1><pre class="source lang-java linenums">package org.QTS.stresstest;
+
+
+import com.tvd12.ezyfox.entity.EzyObject;
+import org.QTS.app.controller.NetworkPlayerRequestController;
+import com.tvd12.ezyfox.concurrent.EzyExecutors;
+import com.tvd12.ezyfoxserver.client.EzyClient;
+import com.tvd12.ezyfoxserver.client.constant.EzyCommand;
+import com.tvd12.ezyfoxserver.client.setup.EzyAppSetup;
+import com.tvd12.ezyfoxserver.client.setup.EzySetup;
+import org.QTS.stresstest.handler.AccessAppHandler;
+import org.QTS.stresstest.handler.HandshakeHandler;
+import org.QTS.stresstest.handler.LoginSuccessHandler;
+import org.QTS.stresstest.handler.UdpHandshakeHandler;
+
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
+public class SocketClientSetup {
+
+<span class="nc" id="L22">    private final AtomicInteger counter = new AtomicInteger();</span>
+    private final ScheduledExecutorService executorService;
+
+<span class="nc" id="L25">    public SocketClientSetup(String clientType) {</span>
+<span class="nc" id="L26">        this.executorService = EzyExecutors.newScheduledThreadPool(1, clientType + &quot;-spawn-schedule&quot;);</span>
+<span class="nc" id="L27">        Runtime.getRuntime().addShutdownHook(new Thread(executorService::shutdown));</span>
+<span class="nc" id="L28">    }</span>
+
+    public void setup(EzyClient client, boolean useUdp) {
+<span class="nc" id="L31">        int count = counter.incrementAndGet();</span>
+<span class="nc" id="L32">        EzySetup setup = client.setup();</span>
+<span class="nc" id="L33">        setup.addDataHandler(EzyCommand.HANDSHAKE, new HandshakeHandler(count));</span>
+<span class="nc" id="L34">        setup.addDataHandler(EzyCommand.LOGIN, new LoginSuccessHandler(useUdp));</span>
+<span class="nc" id="L35">        setup.addDataHandler(EzyCommand.UDP_HANDSHAKE, new UdpHandshakeHandler());</span>
+<span class="nc" id="L36">        setup.addDataHandler(EzyCommand.APP_ACCESS, new AccessAppHandler(useUdp, executorService));</span>
+
+<span class="nc" id="L38">        EzyAppSetup appSetup = setup.setupApp(&quot;QworldSever&quot;);</span>
+
+<span class="nc" id="L40">        appSetup.addDataHandler(&quot;tcpPlayerSpawn&quot;, (app, data) -&gt; {</span>
+<span class="nc" id="L41">            System.out.println(&quot;==================tcpPlayerSpawn==============&quot;);</span>
+<span class="nc" id="L42">			String command = ((EzyObject)data).get(&quot;Command&quot;, String.class);</span>
+<span class="nc" id="L43">			System.out.println(&quot;tcp &gt; server response: &quot; + command);</span>
+<span class="nc" id="L44">        });</span>
+<span class="nc" id="L45">        appSetup.addDataHandler(&quot;udpPlayerSpawn&quot;, (app, data) -&gt; {</span>
+<span class="nc" id="L46">            System.out.println(&quot;==================tcpPlayerSpawn==============&quot;);</span>
+//			String message = ((EzyObject)data).get(&quot;message&quot;, String.class);
+//			System.out.println(&quot;udp &gt; server response: &quot; + message);
+<span class="nc" id="L49">        });</span>
+<span class="nc" id="L50">    }</span>
+}
+/*public void setup(EzyClient client, boolean useUdp) {
+        int count = counter.incrementAndGet();
+        EzySetup setup = client.setup();
+        setup.addDataHandler(EzyCommand.HANDSHAKE, new HandshakeHandler(count));
+        setup.addDataHandler(EzyCommand.LOGIN, new LoginSuccessHandler(useUdp));
+        setup.addDataHandler(EzyCommand.UDP_HANDSHAKE, new UdpHandshakeHandler());
+        setup.addDataHandler(EzyCommand.APP_ACCESS, new AccessAppHandler(useUdp, messageCount, executorService));
+        NetworkPlayerRequestController newhehe = new NetworkPlayerRequestController();
+        EzyAppSetup appSetup = setup.setupApp(&quot;hello-world&quot;);
+        appSetup.addDataHandler(&quot;broadcastMessage&quot;, (app, data) -&gt; {
+//			String message = ((EzyObject)data).get(&quot;message&quot;, String.class);
+//			System.out.println(&quot;tcp &gt; server response: &quot; + message);
+        });
+        appSetup.addDataHandler(&quot;udpBroadcastMessage&quot;, (app, data) -&gt; {
+//			String message = ((EzyObject)data).get(&quot;message&quot;, String.class);
+//			System.out.println(&quot;udp &gt; server response: &quot; + message);
+        });
+    }*/
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

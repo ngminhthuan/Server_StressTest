@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.QTS</groupId>
+        <artifactId>QworldServer</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <groupId>org.QTS.stresstest</groupId>
+    <artifactId>QworldServer-stresstest</artifactId>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <ezy.netty.client.version>1.1.9</ezy.netty.client.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.QTS</groupId>
+            <artifactId>QworldServer-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.QTS</groupId>
+            <artifactId>QworldServer-app-api</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.QTS</groupId>
+            <artifactId>QworldServer-app-entry</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.QTS</groupId>
+            <artifactId>QworldServer-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tvd12</groupId>
+            <artifactId>ezyfox-server-embedded</artifactId>
+            <version>${ezy.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tvd12</groupId>
+            <artifactId>ezyfox-server-netty-client</artifactId>
+            <version>${ezy.netty.client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tvd12</groupId>
+            <artifactId>ezyfox-server-java-client</artifactId>
+            <version>${ezy.client.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
