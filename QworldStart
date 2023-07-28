@@ -1,0 +1,265 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Project/Maven2/JavaApp/src/main/java/${packagePath}/${mainClassName}.java to edit this template
+ */
+
+package org.QTS.Qworld;
+
+import com.tvd12.ezyfoxserver.setting.*;
+import com.tvd12.ezyfoxserver.constant.EzyEventType;
+import com.tvd12.ezyfoxserver.embedded.EzyEmbeddedServer;
+import com.tvd12.ezyfoxserver.ext.EzyAppEntry;
+import com.tvd12.ezyfoxserver.ext.EzyPluginEntry;
+import org.QTS.app.AppEntry;
+import org.QTS.app.AppEntryLoader;
+import org.QTS.plugin.PluginEntry;
+import org.QTS.plugin.PluginEntryLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+/**
+ *
+ * @author Peter
+ */
+public class QworldSever {
+    private static final String homeTown = "homeTown";
+    private static final String chanel_1 = "chanel_1";
+    private static final String chanel_2 = "chanel_2";
+    private static final String chanel_3 = "chanel_3";
+    private static final String chanel_4 = "chanel_4";
+    private static final String chanel_5 = "chanel_5";
+    private static final String chanel_6 = "chanel_6";
+    private static final String chanel_7 = "chanel_7";
+    private static final String chanel_8 = "chanel_8";
+    private static final String chanel_classroom = "chanel_classroom";
+    private static final String chanel_home = "chanel_home";
+    private static final String PLUGIN_NAME = "QworldSever";
+    private static final String chanel_test = "QworldSeverTest";
+
+    public static void main(String[] args) throws Exception {
+
+        EzyPluginSettingBuilder pluginSettingBuilder = new EzyPluginSettingBuilder()
+                .name(PLUGIN_NAME)
+                .addListenEvent(EzyEventType.USER_LOGIN)
+                .addListenEvent(EzyEventType.USER_REMOVED)
+                .entryLoader(DecoratedPluginEntryLoader.class);
+//                .entryLoader(QworldPluginEntryLoader.class);
+
+        //setup chanel for room ------------------------------------------------------------------------------------------
+//        EzyAppSettingBuilder channelSettingBuilder  = new EzyAppSettingBuilder()
+//                .name(room_1)
+//                .entryLoader(QworldAppEntryLoader.class);
+
+        // setup chanel --------------------------------------------------------------------------------------------------
+         EzyAppSettingBuilder appTestSettingBuilder = new EzyAppSettingBuilder()
+                .name(chanel_test)
+                .entryLoader(DecoratedAppEntryLoader.class);
+         EzyAppSettingBuilder appSettingBuilder1 = new EzyAppSettingBuilder()
+                .name(chanel_1)
+                .entryLoader(DecoratedAppEntryLoader.class);
+//                .entryLoader(QworldAppEntryLoader.class);
+         EzyAppSettingBuilder appSettingBuilder2 = new EzyAppSettingBuilder()
+                .name(chanel_2)
+                .entryLoader(DecoratedAppEntryLoader.class);
+          EzyAppSettingBuilder appSettingBuilder3 = new EzyAppSettingBuilder()
+                .name(chanel_3)
+                .entryLoader(DecoratedAppEntryLoader.class);
+         EzyAppSettingBuilder appSettingBuilder4 = new EzyAppSettingBuilder()
+                .name(chanel_4)
+                .entryLoader(DecoratedAppEntryLoader.class);
+          EzyAppSettingBuilder appSettingBuilder5 = new EzyAppSettingBuilder()
+                .name(chanel_5)
+                .entryLoader(DecoratedAppEntryLoader.class);
+         EzyAppSettingBuilder appSettingBuilder6 = new EzyAppSettingBuilder()
+                .name(chanel_6)
+                .entryLoader(DecoratedAppEntryLoader.class);
+          EzyAppSettingBuilder appSettingBuilder7 = new EzyAppSettingBuilder()
+                .name(chanel_7)
+                .entryLoader(DecoratedAppEntryLoader.class);
+         EzyAppSettingBuilder appSettingBuilder8 = new EzyAppSettingBuilder()
+                .name(chanel_8)
+                .entryLoader(DecoratedAppEntryLoader.class);
+        EzyAppSettingBuilder appSettingBuilderClassroom = new EzyAppSettingBuilder()
+                .name(chanel_classroom)
+                .entryLoader(DecoratedAppEntryLoader.class);
+        EzyAppSettingBuilder appSettingBuilderHome = new EzyAppSettingBuilder()
+                .name(chanel_home)
+                .entryLoader(DecoratedAppEntryLoader.class);
+
+
+         // setup zone --------------------------------------------------------------------------------------------------
+        EzyZoneSettingBuilder zoneHomeTownSettingBuilder = new EzyZoneSettingBuilder()
+                .name(homeTown)
+                .application(appSettingBuilder1.build())
+                .application(appSettingBuilder2.build())
+                .application(appSettingBuilder3.build())
+                .application(appSettingBuilder4.build())
+                .application(appSettingBuilder5.build())
+                .application(appSettingBuilder6.build())
+                .application(appSettingBuilder7.build())
+                .application(appSettingBuilder8.build())
+                .application(appTestSettingBuilder.build())
+                .application(appSettingBuilderClassroom.build())
+                .application((appSettingBuilderHome.build()))
+                .plugin(pluginSettingBuilder.build());
+
+        EzySocketSettingBuilder socketSettingBuilder = new EzySocketSettingBuilder()
+                .sslActive(true)
+                .maxRequestSize(512);
+
+        EzyWebSocketSettingBuilder webSocketSettingBuilder = new EzyWebSocketSettingBuilder()
+                .active(false);
+
+        EzyUdpSettingBuilder udpSettingBuilder = new EzyUdpSettingBuilder()
+                .maxRequestSize(1024)
+                .active(true);
+
+        EzySessionManagementSettingBuilder sessionManagementSettingBuilder = new EzySessionManagementSettingBuilder()
+                .sessionMaxRequestPerSecond(
+                        new EzySessionManagementSettingBuilder.EzyMaxRequestPerSecondBuilder()
+                            .value(10000)
+                            .build()
+                );
+
+        EzySimpleSettings settings = new EzySettingsBuilder()
+                .zone(zoneHomeTownSettingBuilder.build())
+                .socket(socketSettingBuilder.build())
+                .websocket(webSocketSettingBuilder.build())
+                .udp(udpSettingBuilder.build())
+                .sessionManagement(sessionManagementSettingBuilder.build())
+                .addEventController(
+                        EzyEventType.SERVER_INITIALIZING,
+                        ServerInitializingController.class
+                )
+                .addEventController(
+                        EzyEventType.CLIENT_HANDSHAKE,
+                        ClientHandshakeController.class
+                )
+                .build();
+
+        EzyEmbeddedServer server = EzyEmbeddedServer.builder()
+                .settings(settings)
+                .build();
+
+        server.start();
+
+    }
+//    public static class QworldAppEntry extends EzySimpleAppEntry {
+//
+//        @Override
+//        protected String[] getScanableBeanPackages() {
+//            return new String[]{
+//                "com.qts.Qworld"
+//            };
+//        }
+//
+//        @Override
+//        protected String[] getScanableBindingPackages() {
+//            return new String[]{
+//                "com.qts.Qworld.model"
+//            };
+//        }
+//
+//        @Override
+//        protected void setupBeanContext(EzyAppContext context, EzyBeanContextBuilder builder) {
+//            builder.addProperties("application.yaml");
+//        }
+//
+//        @Override
+//        protected EzyAppRequestController newUserRequestController(EzyBeanContext beanContext) {
+//            return EzyUserRequestAppSingletonController.builder()
+//                    .beanContext(beanContext)
+//                    .build();
+//        }
+//
+//    }
+//
+//    public static class QworldAppEntryLoader extends EzyAbstractAppEntryLoader {
+//
+//        @Override
+//        public EzyAppEntry load() {
+//            return new QworldAppEntry();
+//        }
+//
+//    }
+//    public static class QworldPluginEntry extends EzySimplePluginEntry {
+//
+//        @Override
+//        protected String[] getScanableBeanPackages() {
+//            return new String[]{
+//                "com.qts.Qworld"
+//            };
+//        }
+//         @Override
+//        protected String[] getScanableBindingPackages() {
+//            return new String[]{
+//                "com.qts.Qworld.model"
+//            };
+//        }
+//        @Override
+//        protected void setupBeanContext(EzyPluginContext context, EzyBeanContextBuilder builder) {
+//            builder.addProperties("application.yaml");
+//        }
+//         @Override
+//         protected EzyPluginRequestController newUserRequestController(EzyBeanContext beanContext) {
+//           return EzyUserRequestPluginSingletonController.builder()
+//                    .beanContext(beanContext)
+//                    .build();
+//         }
+//    }
+//
+//    public static class QworldPluginEntryLoader extends EzyAbstractPluginEntryLoader {
+//
+//        @Override
+//        public EzyPluginEntry load() {
+//            return new QworldPluginEntry();
+//        }
+//    }
+
+    public static class DecoratedPluginEntryLoader extends PluginEntryLoader {
+
+        @Override
+        public EzyPluginEntry load() throws Exception {
+            return new PluginEntry() {
+
+                @Override
+                protected String getConfigFile(EzyPluginSetting setting) {
+                    return Paths.get(getPluginPath(setting), "config", "config.properties")
+                            .toString();
+                }
+
+                private String getPluginPath(EzyPluginSetting setting) {
+                    Path pluginPath = Paths.get("QworldServer-plugin");
+                    if (!Files.exists(pluginPath)) {
+                        pluginPath = Paths.get("../QworldServer-plugin");
+                    }
+                    return pluginPath.toString();
+                }
+            };
+        }
+    }
+
+    public static class DecoratedAppEntryLoader extends AppEntryLoader {
+
+        @Override
+        public EzyAppEntry load() throws Exception {
+            return new AppEntry() {
+
+                @Override
+                protected String getConfigFile(EzyAppSetting setting) {
+                    return Paths.get(getAppPath(), "config", "config.properties")
+                            .toString();
+                }
+
+                private String getAppPath() {
+                    Path pluginPath = Paths.get("QworldServer-app-entry");
+                    if (!Files.exists(pluginPath)) {
+                        pluginPath = Paths.get("../QworldServer-app-entry");
+                    }
+                    return pluginPath.toString();
+                }
+            };
+        }
+    }
+}
